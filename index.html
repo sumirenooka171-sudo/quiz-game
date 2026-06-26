@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A型・B型の違いクイズチャレンジ</title>
+
+<style>
+body{
+    font-family:sans-serif;
+    background:#f4f6f9;
+    max-width:800px;
+    margin:auto;
+    padding:20px;
+}
+
+.container{
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h1{
+    text-align:center;
+}
+
+#question{
+    font-size:22px;
+    margin-bottom:20px;
+}
+
+.option{
+    display:block;
+    width:100%;
+    margin:10px 0;
+    padding:12px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+#feedback{
+    margin-top:15px;
+    font-weight:bold;
+    font-size:18px;
+}
+
+#explanation{
+    margin-top:10px;
+    color:#333;
+}
+
+#nextBtn{
+    margin-top:20px;
+    padding:10px 20px;
+    display:none;
+}
+
+#result{
+    text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>A型・B型の違いクイズチャレンジ</h1>
+
+<div class="notice">
+※詳細な利用条件や手続きは、お住まいの自治体や事業所へご確認ください。
+</div>
+
+<div id="quiz">
+
+<h2 id="question"></h2>
+
+<div id="options"></div>
+
+<div id="feedback"></div>
+
+<div id="explanation"></div>
+
+<button id="nextBtn" onclick="nextQuestion()">
+次の問題へ
+</button>
+
+</div>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+
+const quizData = [
+
+{
+question:"【初級】A型事業所の特徴はどれ？",
+options:["雇用契約を結ぶ","雇用契約を結ばない","学校に通う","自営業になる"],
+answer:0,
+explanation:"A型事業所では利用者と雇用契約を結びます。"
+},
+
+{
+question:"【初級】B型事業所の特徴はどれ？",
+options:["正社員のみ","雇用契約を結ばない","必ず週5日勤務","一般企業のみ"],
+answer:1,
+explanation:"B型事業所では雇用契約を結ばずに利用します。"
+},
+
+{
+question:"【初級】A型事業所で支払われるものは？",
+options:["工賃","商品券","賃金","ポイント"],
+answer:2,
+explanation:"A型は雇用契約があるため賃金が支払われます。"
+},
+
+{
+question:"【中級】B型事業所で支払われるものは？",
+options:["賃金","工賃","ボーナス","退職金"],
+answer:1,
+explanation:"B型では工賃が支払われます。"
+},
+
+{
+question:"【中級】利用前に行うことが多いものは？",
+options:["海外旅行","見学や体験利用","資格試験","引越し"],
+answer:1,
+explanation:"見学や体験利用を行う事業所が多いです。"
+},
+
+{
+question:"【中級】利用に必要になることが多いものは？",
+options:["パスポート","障害福祉サービス受給者証","運転免許証","卒業証書"],
+answer:1,
+explanation:"利用には受給者証が必要になる場合が多いです。"
+},
+
+{
+question:"【中級】最低賃金の適用を受けるのは？",
+options:["A型","B型","両方","どちらも受けない"],
+answer:0,
+explanation:"A型は雇用契約があるため最低賃金が適用されます。"
+},
+
+{
+question:"【上級】一般就労へのステップアップを目指す人が利用することが多いのは？",
+options:["A型","B型","老人ホーム","デイサービス"],
+answer:0,
+explanation:"A型は一般就労に近い働き方を経験できます。"
+},
+
+{
+question:"【上級】B型事業所の目的として最も適切なのは？",
+options:["働く経験や社会参加","大学受験対策","自動車教習","資格取得のみ"],
+answer:0,
+explanation:"B型は働く経験や社会参加の場として利用されます。"
+},
+
+{
+question:"【最難関】A型とB型の最も大きな違いは？",
+options:[
+"送迎の有無",
+"昼食の有無",
+"雇用契約の有無",
+"作業内容の違い"
+],
+answer:2,
+explanation:"A型は雇用契約あり、B型は雇用契約なしという点が最大の違いです。"
+}
+
+];
+
+
+let currentQuestion = 0;
+let score = 0;
+
+function loadQuestion(){
+
+const q = quizData[currentQuestion];
+
+document.getElementById("question").innerText = q.question;
+
+const optionsDiv = document.getElementById("options");
+optionsDiv.innerHTML = "";
+
+q.options.forEach((option,index)=>{
+
+const btn = document.createElement("button");
+
+btn.innerText = option;
+btn.className = "option";
+
+btn.onclick = ()=>checkAnswer(index);
+
+optionsDiv.appendChild(btn);
+
+});
+
+document.getElementById("feedback").innerHTML="";
+document.getElementById("explanation").innerHTML="";
+document.getElementById("nextBtn").style.display="none";
+}
+
+function checkAnswer(selected){
+
+const q = quizData[currentQuestion];
+
+if(selected === q.answer){
+
+document.getElementById("feedback").innerHTML="⭕ 正解！";
+score++;
+
+}else{
+
+document.getElementById("feedback").innerHTML=
+"❌ 不正解<br>正解：" + q.options[q.answer];
+
+}
+
+document.getElementById("explanation").innerHTML=
+"<strong>解説：</strong>" + q.explanation;
+
+document.querySelectorAll(".option").forEach(btn=>{
+btn.disabled=true;
+});
+
+document.getElementById("nextBtn").style.display="inline-block";
+}
+
+function nextQuestion(){
+
+currentQuestion++;
+
+if(currentQuestion < quizData.length){
+
+loadQuestion();
+
+}else{
+
+showResult();
+
+}
+}
+
+function showResult(){
+
+let rank="";
+
+if(score <= 3){
+
+rank="見学コース";
+
+}else if(score <= 7){
+
+rank="支援員見習い";
+
+}else{
+
+rank="就労支援マスター";
+
+}
+
+document.getElementById("quiz").style.display="none";
+
+document.getElementById("result").innerHTML=`
+<h2>結果発表</h2>
+<h3>${score} / 10 点</h3>
+<h2>${rank}</h2>
+<p>
+
+</p>
+`;
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
